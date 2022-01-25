@@ -16,7 +16,7 @@ parser.add_argument("--branch", "-b", required=True,
     help="target branch to carbon date")
 parser.add_argument("--repopath",
     help="path for the repo")
-parser.add_argument("--url", "-u", required=True
+parser.add_argument("--url", "-u", required=True,
     help="url provided")
 
 args = parser.parse_args()
