@@ -8,6 +8,8 @@ import xml.etree.ElementTree as ET
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("--date", "-d", required=True,
     help="date in the unix format YYYY-MM-DD")
+parser.add_argument("--url", "-u", required=True,
+    help="url provided")
 parser.add_argument("--gitrepo", "-g",
     help="target git repo to date")
 parser.add_argument("--repman", "-m",
@@ -15,9 +17,7 @@ parser.add_argument("--repman", "-m",
 parser.add_argument("--branch", "-b", required=True,
     help="target branch to carbon date")
 parser.add_argument("--repopath",
-    help="path for the repo")
-parser.add_argument("--url", "-u", required=True,
-    help="url provided")
+    help="path to create for the repo, if not specified will use curdir")
 
 args = parser.parse_args()
 
@@ -39,7 +39,7 @@ def main():
     if args.repopath:
         os.makedirs(args.repopath)
         repopath = args.repopath
-        os.chdir(repopath)      
+        os.chdir(repopath)
     
     if args.repman != None:
         repo = git.Repo.clone_from("{}/{}".format(args.url, args.repman), repopath, branch=args.branch)
@@ -58,8 +58,11 @@ def main():
                 os.chdir(assignpath)
                 date_git(os.path.curdir, args.date)
                 os.chdir(repopath)
-
-    targdate = args.date
-
+    elif args.gitrepo != None:
+        repo = git.Repo.clone_from("{}/{}".format(args.url, i.get("name")),
+            assignpath, branch=i.get("revision"))
+        os.chdir(assignpath)
+        date_git(os.path.curdir, args.date)
+        
 if __name__ == "__main__":
     main()
